@@ -11,6 +11,7 @@ import { MqttModulComponent } from "./mqtt-modul/mqtt-modul.component";
     imports: [RouterOutlet, SignalDashboardComponent, MqttModulComponent,]
 })
 
+
 export class AppComponent {
   title = 'Modellbahnsteuerung';
 }
