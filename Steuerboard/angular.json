@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Mobasteuerung3": {
+    "Steuerboard": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/mobasteuerung3",
+            "outputPath": "dist/steuerboard",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -31,8 +31,7 @@
                 "input": "public"
               }
             ],
-            "styles": [     
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",         
+            "styles": [
               "src/styles.scss"
             ],
             "scripts": []
@@ -65,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Mobasteuerung3:build:production"
+              "buildTarget": "Steuerboard:build:production"
             },
             "development": {
-              "buildTarget": "Mobasteuerung3:build:development"
+              "buildTarget": "Steuerboard:build:development"
             }
           },
           "defaultConfiguration": "development"
