@@ -8,7 +8,7 @@ import { ButtonSignalComponent } from "../signal-dashboard/Button-Signal/Button-
     standalone: true,
     templateUrl: './mqtt-modul.component.html',
     styleUrl: './mqtt-modul.component.scss',
-    imports: [SignalDashboardComponent, ButtonSignalComponent]
+    // imports: [SignalDashboardComponent, ButtonSignalComponent]
 })
 export class MqttModulComponent {
 [x: string]: any;
