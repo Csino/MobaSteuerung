@@ -1,0 +1,10 @@
+<div class="card">
+    <div class="card-body">
+      <h6 class="card-title">{{signal.name}}</h6>
+      <p class="card-text">ID: {{signal.id}} | Status: {{signal.status}}</p>
+      <app-button 
+        [buttons]="signal.aspekte"
+        (buttonClick)="onAspektClick($event.toString())">
+      </app-button>
+    </div>
+  </div>
