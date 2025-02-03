@@ -1,45 +1,15 @@
-<!--Karten Vorlage-->
-<!--Blocksignal-->
-<section>
-    <div class="card mb-3" style="width: 10rem;">        
-        <h6 class="card-title">Blocksignal</h6>
-        <p class="card-ID">Id:</p>
-            <div class="card-body"> 
-                <app-button [buttons]="['Hp0', 'Hp1']"></app-button>               
-            </div>                  
-    </div>
-</section>
+<div class="form-container">
+  <mat-form-field appearance="fill">
+    <mat-label>Signaltyp</mat-label>
+    <mat-select [(ngModel)]="selectedSignalType">
+      <mat-option value="blocksignal">Blocksignal</mat-option>
+      <mat-option value="einfahrsignal">Einfahrsignal</mat-option>
+      <mat-option value="ausfahrsignal">Ausfahrsignal</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<!--Einfahrsignal-->
-<section>
-    <div class="card mb-3" style="width: 14rem;">        
-        <h6 class="card-title">Einfahrsignal</h6>
-        <p class="card-ID">Id:</p>
-            <div class="card-body"> 
-                <app-button [buttons]="['Hp0', 'Hp1', 'Hp2']"></app-button>               
-            </div>                  
-    </div>
-</section>
-<!--Ausfahrsignal Signal-->
-<section>
-    <div class="card mb-3" style="width: 16rem;">        
-        <h6 class="card-title ">Ausfahrsignal</h6>
-        <p class="card-ID">Id:</p>
-            <div class="card-body"> 
-                <app-button [buttons]="['Hp0', 'Hp1', 'Hp2', 'Sh1']"></app-button>                
-            </div>                  
-    </div>
-</section>
-
-<!--Vorsignal-->
-
-<section>
-    <div class="card mb-3" style="width: 10rem;">        
-        <h6 class="card-title">Vorsignal</h6>
-        <p class="card-ID">Id:</p>
-            <div class="card-body">                 
-                <app-button [buttons]="['Hp1', 'Hp2']"></app-button>
-            </div>                  
-    </div>
-</section>
-
+  <mat-form-field appearance="fill">
+    <mat-label>Signal ID</mat-label>
+    <input matInput type="text" [(ngModel)]="signalId">
+  </mat-form-field>
+</div>
