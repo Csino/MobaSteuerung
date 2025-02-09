@@ -22,9 +22,7 @@ import { ControlCreateService } from '../../services/control-create.service';
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    BlockSignalSymbolComponent,
-    EntrySignalSymbolComponent,
-    ExitSignalSymbolComponent
+    
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
