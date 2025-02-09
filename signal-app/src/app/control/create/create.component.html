@@ -1,10 +1,10 @@
 <div class="form-container">
   <mat-form-field appearance="fill">
     <mat-label>Signaltyp</mat-label>
-    <mat-select [(ngModel)]="selectedSignalType">
-      <mat-option value="blocksignal">Blocksignal</mat-option>
+    <mat-select [(ngModel)]="selectedSignalType">      
       <mat-option value="einfahrsignal">Einfahrsignal</mat-option>
       <mat-option value="ausfahrsignal">Ausfahrsignal</mat-option>
+      <mat-option value="blocksignal">Blocksignal</mat-option>
     </mat-select>
   </mat-form-field>
 
@@ -13,3 +13,19 @@
     <input matInput type="text" [(ngModel)]="signalId">
   </mat-form-field>
 </div>
+
+<mat-card class="signal-preview">
+  <mat-card-content>
+    <div class="signal-icon">
+      <ng-container *ngComponentOutlet="getSignalIcon()"></ng-container>
+    </div>
+    <div class="signal-id">ID:
+      <ng-container *ngIf="signalId.trim(); else noId">
+        {{ signalId }}
+      </ng-container>
+      <ng-template #noId>
+        Keine ID
+      </ng-template>
+    </div>
+  </mat-card-content>
+</mat-card>

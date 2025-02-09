@@ -10,3 +10,23 @@
 mat-form-field {
   width: 100%;
 }
+
+.signal-preview {
+  max-width: 200px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.signal-icon {
+  margin: 15px 0;
+  
+  img {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.signal-id {
+  font-size: 1.2em;
+  font-weight: bold;
+}
