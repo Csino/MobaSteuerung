@@ -42,4 +42,14 @@ export class ControlCreateService {
       this.containersSource.next(this.containers);
     }
   }
+
+  saveSignal(signalData: { type: string, id: string }) {
+    const container = this.containers.find(c => c.type === signalData.type);
+    if (container && !container.signals.find(s => s.id === signalData.id)) {
+      container.signals.push(signalData);
+      this.containersSource.next([...this.containers]); // Emit new value to trigger updates
+      console.log('Signal saved:', signalData);
+      console.log('Current containers:', this.containers);
+    }
+  }
 }

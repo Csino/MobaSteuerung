@@ -13,13 +13,17 @@
     <input matInput 
            type="text" 
            [(ngModel)]="signalId"
-           (ngModelChange)="onSignalIdChange()"
            placeholder="Signal ID eingeben">
   </mat-form-field>
 
-  <button mat-raised-button color="warn" (click)="resetForm()">
-    Zurücksetzen
-  </button>
+  <div class="button-container">
+    <button mat-raised-button color="primary" (click)="saveSignal()" [disabled]="!signalId || !selectedSignalType">
+      Speichern
+    </button>
+    <button mat-raised-button color="warn" (click)="resetForm()">
+      Zurücksetzen
+    </button>
+  </div>
 </div>
 
 <mat-card class="signal-preview">
@@ -30,7 +34,7 @@
       </div>
       <div class="signal-info">
         <span class="signal-label">Signal-ID:</span>
-        <span class="signal-value">{{signalId ? signalId : 'Keine ID'}}</span>
+        <span class="signal-value">{{ signalId || 'Keine ID' }}</span>
       </div>
     </div>
   </mat-card-content>

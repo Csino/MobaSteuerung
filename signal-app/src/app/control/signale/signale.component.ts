@@ -1,10 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { ControlCreateService } from '../../services/control-create.service';
 import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol';
 import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol';
 import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol';
+
+interface SignalContainer {
+  type: string;
+  title: string;
+  signals: {
+    id: string;
+    type: string;
+  }[];
+}
 
 @Component({
   selector: 'app-signale',
@@ -19,11 +28,20 @@ import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol';
   templateUrl: './signale.component.html',
   styleUrls: ['./signale.component.scss']
 })
-export class SignaleComponent {
-  containers$;
+export class SignaleComponent implements OnInit {
+  containers: SignalContainer[] = [];
+  containers$;  // Deklaration ohne Initialisierung
 
   constructor(private controlCreateService: ControlCreateService) {
-    this.containers$ = this.controlCreateService.currentContainers;
+    this.containers$ = this.controlCreateService.currentContainers;  // Initialisierung im Constructor
+    this.controlCreateService.currentContainers.subscribe(containers => {
+      this.containers = containers;
+      console.log('Containers updated:', this.containers);
+    });
+  }
+
+  ngOnInit() {
+    // Initialisierung kann hier erfolgen, falls nötig
   }
 
   // Hilfsmethode zum Überprüfen des Typs

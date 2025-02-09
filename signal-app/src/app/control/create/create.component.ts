@@ -22,16 +22,18 @@ import { ControlCreateService } from '../../services/control-create.service';
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    
-],
+    BlockSignalSymbolComponent,
+    EntrySignalSymbolComponent,
+    ExitSignalSymbolComponent
+  ],
   templateUrl: './create.component.html',
-  styleUrl: './create.component.scss'
+  styleUrls: ['./create.component.scss']
 })
 export class CreateComponent {
   constructor(private controlCreateService: ControlCreateService) { }
 
   selectedSignalType: string = '';
-  signalId: string = '';
+  signalId: string = ''; // Initialisierung der signalId
 
   onSignalIdChange() {
     if (this.selectedSignalType && this.signalId) {
@@ -74,6 +76,15 @@ export class CreateComponent {
       type: '',
       id: ''
     });
+  }
+
+  saveSignal() {
+    if (this.selectedSignalType && this.signalId) {
+      this.controlCreateService.saveSignal({
+        type: this.selectedSignalType,
+        id: this.signalId
+      });
+    }
   }
 
   sendSignalData(data: any) {
