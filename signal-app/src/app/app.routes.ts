@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ControlboardComponent } from "./control/controlboard/controlboard.component";
-import { SignalComponent } from "./control/signal/signal.component";
+import { SignaleComponent } from "./control/signale/signale.component";
 import { SwitchComponent } from "./control/switch/switch.component";
 import { CreateComponent } from './control/create/create.component';
 
@@ -13,7 +13,7 @@ export const routes: Routes = [
         path: 'create', component: CreateComponent
     },
     {
-        path: 'signal', component: SignalComponent
+        path: 'signale', component: SignaleComponent
     },
     {
         path: 'switch', component: SwitchComponent

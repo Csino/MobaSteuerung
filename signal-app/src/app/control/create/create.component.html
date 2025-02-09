@@ -1,7 +1,7 @@
 <div class="form-container">
   <mat-form-field appearance="fill">
     <mat-label>Signaltyp</mat-label>
-    <mat-select [(ngModel)]="selectedSignalType">      
+    <mat-select [(ngModel)]="selectedSignalType" (ngModelChange)="onSignalTypeChange()">      
       <mat-option value="einfahrsignal">Einfahrsignal</mat-option>
       <mat-option value="ausfahrsignal">Ausfahrsignal</mat-option>
       <mat-option value="blocksignal">Blocksignal</mat-option>
@@ -10,22 +10,28 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Signal ID</mat-label>
-    <input matInput type="text" [(ngModel)]="signalId">
+    <input matInput 
+           type="text" 
+           [(ngModel)]="signalId"
+           (ngModelChange)="onSignalIdChange()"
+           placeholder="Signal ID eingeben">
   </mat-form-field>
+
+  <button mat-raised-button color="warn" (click)="resetForm()">
+    Zurücksetzen
+  </button>
 </div>
 
 <mat-card class="signal-preview">
   <mat-card-content>
-    <div class="signal-icon">
-      <ng-container *ngComponentOutlet="getSignalIcon()"></ng-container>
-    </div>
-    <div class="signal-id">ID:
-      <ng-container *ngIf="signalId.trim(); else noId">
-        {{ signalId }}
-      </ng-container>
-      <ng-template #noId>
-        Keine ID
-      </ng-template>
+    <div class="preview-container">
+      <div class="signal-icon">
+        <ng-container *ngComponentOutlet="getSignalIcon()"></ng-container>
+      </div>
+      <div class="signal-info">
+        <span class="signal-label">Signal-ID:</span>
+        <span class="signal-value">{{signalId ? signalId : 'Keine ID'}}</span>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>

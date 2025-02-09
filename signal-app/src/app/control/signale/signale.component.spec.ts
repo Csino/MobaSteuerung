@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignalComponent } from './signal.component';
+import { SignalComponent } from './signale.component';
 
 describe('SignalComponent', () => {
   let component: SignalComponent;
