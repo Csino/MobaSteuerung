@@ -21,9 +21,7 @@ interface SignalContainer {
   imports: [
     CommonModule,
     MatCardModule,
-    BlockSignalSymbolComponent,
-    EntrySignalSymbolComponent,
-    ExitSignalSymbolComponent
+    
   ],
   templateUrl: './signale.component.html',
   styleUrls: ['./signale.component.scss']
