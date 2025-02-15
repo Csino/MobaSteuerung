@@ -31,10 +31,18 @@ mat-card {
   background-color: #fff;
   transition: box-shadow 0.3s ease;
   padding: 1rem;
+  position: relative;
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
+}
+
+.delete-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
 }
 
 .signal-item {

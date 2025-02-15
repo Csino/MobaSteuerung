@@ -4,6 +4,9 @@
       <h3>{{container.title}}</h3>
       <div class="signals-list">
         <mat-card *ngFor="let signal of container.signals" class="signal-card">
+          <button mat-icon-button color="warn" class="delete-button" (click)="deleteSignal(container.type, signal.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
           <mat-card-content>
             <div class="signal-item">
               <div class="signal-icon">

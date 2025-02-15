@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { ControlCreateService } from '../../services/control-create.service';
 import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol';
 import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol';
@@ -21,7 +23,8 @@ interface SignalContainer {
   imports: [
     CommonModule,
     MatCardModule,
-    
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './signale.component.html',
   styleUrls: ['./signale.component.scss']
@@ -54,5 +57,9 @@ export class SignaleComponent implements OnInit {
       default:
         return null;
     }
+  }
+
+  deleteSignal(type: string, id: string): void {
+    this.controlCreateService.removeSignal(type, id);
   }
 }
