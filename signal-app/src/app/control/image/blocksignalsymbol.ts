@@ -56,7 +56,16 @@ export class BlockSignalSymbolComponent {
   }
 
   onCircleClick(circle: { cx: number, cy: number, fill: string }): void {
-    console.log('Circle clicked with color:', circle.fill);
+    let signalAspect;
+    switch (circle.fill) {
+      case 'red':
+        signalAspect = 'Hp0';
+        break;
+      case 'green':
+        signalAspect = 'Hp1';
+        break;      
+    }
+    console.log('Signal zeigt:', signalAspect);  
   }
 
   onCircleMouseOver(event: MouseEvent): void {
