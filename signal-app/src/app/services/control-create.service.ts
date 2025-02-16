@@ -37,17 +37,6 @@ export class ControlCreateService {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.containers));
   }
 
-  updateSignalData(data: SignalData) {
-    if (data.type && data.id) {
-      const container = this.containers.find(c => c.type === data.type);
-      if (container && !container.signals.find(s => s.id === data.id)) {
-        container.signals.push(data);
-        this.containersSource.next(this.containers);
-        this.saveToStorage();
-      }
-    }
-  }
-
   removeSignal(type: string, id: string) {
     const container = this.containers.find(c => c.type === type);
     if (container) {
@@ -57,14 +46,24 @@ export class ControlCreateService {
     }
   }
 
-  saveSignal(signalData: { type: string, id: string }) {
-    const container = this.containers.find(c => c.type === signalData.type);
-    if (container && !container.signals.find(s => s.id === signalData.id)) {
-      container.signals.push(signalData);
-      this.containersSource.next([...this.containers]); // Emit new value to trigger updates
-      console.log('Signal saved:', signalData);
-      console.log('Current containers:', this.containers);
-      this.saveToStorage();
+  isSignalIdUnique(id: string): boolean {
+    return !this.containers.some(container => 
+      container.signals.some(signal => signal.id === id)
+    );
+  }
+
+  saveSignal(signalData: { type: string, id: string }): boolean {
+    if (!this.isSignalIdUnique(signalData.id)) {
+      return false;
     }
+
+    const container = this.containers.find(c => c.type === signalData.type);
+    if (container) {
+      container.signals.push(signalData);
+      this.containersSource.next([...this.containers]); // Wichtig: Neue Referenz erzeugen
+      this.saveToStorage();
+      return true;
+    }
+    return false;
   }
 }

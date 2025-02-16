@@ -13,11 +13,16 @@
     <input matInput 
            type="text" 
            [(ngModel)]="signalId"
+           (ngModelChange)="onSignalIdChange()"
            placeholder="Signal ID eingeben">
+    <mat-error *ngIf="isDuplicateId">Diese Signal-ID existiert bereits!</mat-error>
   </mat-form-field>
 
   <div class="button-container">
-    <button mat-raised-button color="primary" (click)="saveSignal()" [disabled]="!signalId || !selectedSignalType">
+    <button mat-raised-button 
+            color="primary" 
+            (click)="saveSignal()" 
+            [disabled]="!signalId || !selectedSignalType || isDuplicateId">
       Speichern
     </button>
     <button mat-raised-button color="warn" (click)="resetForm()">

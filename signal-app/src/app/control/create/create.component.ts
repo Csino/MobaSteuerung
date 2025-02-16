@@ -32,23 +32,15 @@ export class CreateComponent {
 
   selectedSignalType: string = '';
   signalId: string = ''; // Initialisierung der signalId
+  isDuplicateId = false;
 
   onSignalIdChange() {
-    if (this.selectedSignalType && this.signalId) {
-      this.sendSignalData({
-        type: this.selectedSignalType,
-        id: this.signalId
-      });
-    }
+    // Nur Duplikatsprüfung durchführen, keine Daten senden
+    this.isDuplicateId = !this.controlCreateService.isSignalIdUnique(this.signalId);
   }
 
   onSignalTypeChange() {
-    if (this.selectedSignalType && this.signalId) {
-      this.sendSignalData({
-        type: this.selectedSignalType,
-        id: this.signalId
-      });
-    }
+    // Keine automatische Aktualisierung mehr
   }
 
   getSignalIcon(): Type<any> {
@@ -65,27 +57,26 @@ export class CreateComponent {
   }
 
   resetForm() {
-    if (this.selectedSignalType && this.signalId) {
-      this.controlCreateService.removeSignal(this.selectedSignalType, this.signalId);
-    }
     this.selectedSignalType = '';
     this.signalId = '';
-    this.sendSignalData({
-      type: '',
-      id: ''
-    });
+    this.isDuplicateId = false;
   }
 
   saveSignal() {
-    if (this.selectedSignalType && this.signalId) {
-      this.controlCreateService.saveSignal({
+    if (this.signalId && this.selectedSignalType) {
+      const signalData = {
         type: this.selectedSignalType,
         id: this.signalId
-      });
-    }
-  }
+      };
 
-  sendSignalData(data: any) {
-    this.controlCreateService.updateSignalData(data);
+      const success = this.controlCreateService.saveSignal(signalData);
+
+      if (success) {
+        this.isDuplicateId = false;
+        this.resetForm();
+      } else {
+        this.isDuplicateId = true;
+      }
+    }
   }
 }
