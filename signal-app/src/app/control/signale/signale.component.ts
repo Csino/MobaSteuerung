@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ControlCreateService } from '../../services/control-create.service';
+import { SignalService } from '../../services/signal.service';
 import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol';
 import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol';
 import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol';
@@ -31,11 +31,11 @@ interface SignalContainer {
 })
 export class SignaleComponent implements OnInit {
   containers: SignalContainer[] = [];
-  containers$;  // Deklaration ohne Initialisierung
+  containers$; // Nur Deklaration
 
-  constructor(private controlCreateService: ControlCreateService) {
-    this.containers$ = this.controlCreateService.currentContainers;  // Initialisierung im Constructor
-    this.controlCreateService.currentContainers.subscribe(containers => {
+  constructor(private signalService: SignalService) {
+    this.containers$ = this.signalService.currentContainers; // Initialisierung im Konstruktor
+    this.signalService.currentContainers.subscribe(containers => {
       this.containers = containers;
       console.log('Containers updated:', this.containers);
     });
@@ -60,6 +60,6 @@ export class SignaleComponent implements OnInit {
   }
 
   deleteSignal(type: string, id: string): void {
-    this.controlCreateService.removeSignal(type, id);
+    this.signalService.removeSignal(type, id);  // Korrigierte Referenz
   }
 }

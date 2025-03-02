@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol';
 import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol';
 import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol';
-import { ControlCreateService } from '../../services/control-create.service';
+import { SignalService } from "../../services/signal.service";
 
 @Component({
   selector: 'app-create',
@@ -22,21 +22,20 @@ import { ControlCreateService } from '../../services/control-create.service';
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    
   ],
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent {
-  constructor(private controlCreateService: ControlCreateService) { }
+  constructor(private signalService: SignalService) { }
 
-  selectedSignalType: string = '';
+  selectedSignalType: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | '' = '';
   signalId: string = ''; // Initialisierung der signalId
   isDuplicateId = false;
 
   onSignalIdChange() {
     // Nur Duplikatsprüfung durchführen, keine Daten senden
-    this.isDuplicateId = !this.controlCreateService.isSignalIdUnique(this.signalId);
+    this.isDuplicateId = !this.signalService.isSignalIdUnique(this.signalId);
   }
 
   onSignalTypeChange() {
@@ -62,14 +61,14 @@ export class CreateComponent {
     this.isDuplicateId = false;
   }
 
-  saveSignal() {
+  saveSignal(): void {
     if (this.signalId && this.selectedSignalType) {
       const signalData = {
         type: this.selectedSignalType,
         id: this.signalId
       };
 
-      const success = this.controlCreateService.saveSignal(signalData);
+      const success = this.signalService.saveSignal(signalData);
 
       if (success) {
         this.isDuplicateId = false;

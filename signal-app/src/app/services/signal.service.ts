@@ -15,7 +15,7 @@ interface SignalContainer {
 @Injectable({
   providedIn: 'root'
 })
-export class ControlCreateService {
+export class SignalService {
   private readonly STORAGE_KEY = 'signal-containers';
   private containers: SignalContainer[] = [];
 
@@ -23,7 +23,6 @@ export class ControlCreateService {
   currentContainers = this.containersSource.asObservable();
 
   constructor() {
-    // Lade gespeicherte Daten oder initialisiere mit Standardwerten
     const saved = localStorage.getItem(this.STORAGE_KEY);
     this.containers = saved ? JSON.parse(saved) : [
       { type: 'einfahrsignal', title: 'Einfahrsignal', signals: [] },
@@ -35,15 +34,6 @@ export class ControlCreateService {
 
   private saveToStorage(): void {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.containers));
-  }
-
-  removeSignal(type: string, id: string) {
-    const container = this.containers.find(c => c.type === type);
-    if (container) {
-      container.signals = container.signals.filter(s => s.id !== id);
-      this.containersSource.next(this.containers);
-      this.saveToStorage();
-    }
   }
 
   isSignalIdUnique(id: string): boolean {
@@ -60,10 +50,19 @@ export class ControlCreateService {
     const container = this.containers.find(c => c.type === signalData.type);
     if (container) {
       container.signals.push(signalData);
-      this.containersSource.next([...this.containers]); // Wichtig: Neue Referenz erzeugen
+      this.containersSource.next([...this.containers]);
       this.saveToStorage();
       return true;
     }
     return false;
+  }
+
+  removeSignal(type: string, id: string): void {
+    const container = this.containers.find(c => c.type === type);
+    if (container) {
+      container.signals = container.signals.filter(s => s.id !== id);
+      this.containersSource.next([...this.containers]);
+      this.saveToStorage();
+    }
   }
 }
