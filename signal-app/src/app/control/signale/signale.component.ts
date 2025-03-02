@@ -4,9 +4,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SignalService } from '../../services/signal.service';
-import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol';
-import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol';
-import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol';
+import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol.component';
+import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol.component';
+import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol.component';
 
 interface SignalContainer {
   type: string;

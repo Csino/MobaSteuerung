@@ -1,1 +1,26 @@
-<p>switch works!</p>
+<div class="container">
+  <ng-container *ngFor="let container of containers$ | async">
+    <div class="switch-section">
+      <h3>{{container.title}}</h3>
+      <div class="switches-list">
+        <mat-card *ngFor="let switch of container.switches" class="switch-card">
+          <button mat-icon-button color="warn" class="delete-button" (click)="deleteSwitch(container.type, switch.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <mat-card-content>
+            <div class="switch-item">
+              <div class="switch-icon">
+                <ng-container *ngComponentOutlet="getSwitchComponent(switch.type)">
+                </ng-container>
+              </div>
+              <div class="switch-info">
+                <span class="switch-label">Weichen ID:</span>
+                <span class="switch-value">{{switch.id}}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </ng-container>
+</div>
