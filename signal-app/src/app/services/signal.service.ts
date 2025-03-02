@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-interface SignalData {
+export interface Signal {
   id: string;
   type: string;
+  state: 'halt' | 'fahrt';
 }
 
 interface SignalContainer {
   type: string;
   title: string;
-  signals: SignalData[];
+  signals: Signal[];
 }
 
 @Injectable({
@@ -18,6 +19,7 @@ interface SignalContainer {
 export class SignalService {
   private readonly STORAGE_KEY = 'signal-containers';
   private containers: SignalContainer[] = [];
+  private signals: Signal[] = [];
 
   private containersSource = new BehaviorSubject<SignalContainer[]>(this.containers);
   currentContainers = this.containersSource.asObservable();
@@ -37,9 +39,7 @@ export class SignalService {
   }
 
   isSignalIdUnique(id: string): boolean {
-    return !this.containers.some(container => 
-      container.signals.some(signal => signal.id === id)
-    );
+    return !this.signals.some(signal => signal.id === id);
   }
 
   saveSignal(signalData: { type: string, id: string }): boolean {
@@ -49,9 +49,21 @@ export class SignalService {
 
     const container = this.containers.find(c => c.type === signalData.type);
     if (container) {
-      container.signals.push(signalData);
+      const newSignal: Signal = {
+        ...signalData,
+        state: 'halt' // Standardzustand für neue Signale
+      };
+      container.signals.push(newSignal);
       this.containersSource.next([...this.containers]);
       this.saveToStorage();
+      return true;
+    }
+    return false;
+  }
+
+  addSignal(signal: Signal): boolean {
+    if (this.isSignalIdUnique(signal.id)) {
+      this.signals.push(signal);
       return true;
     }
     return false;

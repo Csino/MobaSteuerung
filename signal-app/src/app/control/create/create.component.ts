@@ -14,6 +14,8 @@ import { RightSwitchSymbolComponent } from '../image/rightswitch.component';
 import { DoubleCrossSwitchComponent } from '../image/doublecrossswitch.component';
 import { SignalService } from "../../services/signal.service";
 import { SwitchService } from "../../services/switch.service"; 
+import { Signal } from "../../services/signal.service";
+import { Switch } from "../../services/switch.service";
 
 @Component({
   selector: 'app-create',
@@ -153,7 +155,7 @@ export class CreateComponent {
 
   validateId(id: string): boolean {
     if (!id) return true;
-    return /^\d+$/.test(id);
+    return /^\d+$/.test(id.toString());
   }
 
   getFormattedId(): string {
@@ -187,5 +189,48 @@ export class CreateComponent {
       }
     }
     return BlockSignalSymbolComponent; // Standardkomponente zurückgeben
+  }
+
+  isValid(): boolean {
+    return Boolean(
+      this.selectedCategory 
+      && this.selectedSignalType 
+      && this.signalId 
+      && !this.isDuplicateId 
+      && this.validateId(this.signalId)
+    );
+  }
+
+  onAdd(): void {
+    const formattedId = this.getFormattedId();
+    
+    if (this.selectedCategory === 'signal') {
+      const signalData: Signal = {
+        id: formattedId,
+        type: this.selectedSignalType,
+        state: 'halt' as const
+      };
+      
+      if (this.signalService.addSignal(signalData)) {
+        this.onReset();
+      }
+    } else {
+      const switchData: Switch = {
+        id: formattedId,
+        type: this.selectedSignalType,
+        position: 'gerade' as const
+      };
+      
+      if (this.switchService.addSwitch(switchData)) {
+        this.onReset();
+      }
+    }
+  }
+
+  onReset(): void {
+    this.selectedCategory = 'signal';
+    this.selectedSignalType = '';
+    this.signalId = '';
+    this.isDuplicateId = false;
   }
 }

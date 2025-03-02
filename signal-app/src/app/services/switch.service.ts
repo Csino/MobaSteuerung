@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-interface SwitchData {
+export interface Switch {
   id: string;
   type: string;
+  position: 'gerade' | 'abzweig';
 }
 
 interface SwitchContainer {
   type: string;
   title: string;
-  switches: SwitchData[];
+  switches: Switch[];
 }
 
 @Injectable({
@@ -18,6 +19,7 @@ interface SwitchContainer {
 export class SwitchService {
   private readonly STORAGE_KEY = 'switch-containers';
   private containers: SwitchContainer[] = [];
+  private switches: Switch[] = [];
 
   private containersSource = new BehaviorSubject<SwitchContainer[]>(this.containers);
   currentContainers = this.containersSource.asObservable();
@@ -37,22 +39,18 @@ export class SwitchService {
   }
 
   isSwitchIdUnique(id: string): boolean {
-    return !this.containers.some(container => 
-      container.switches.some(switch_ => switch_.id === id)
-    );
+    return !this.switches.some(sw => sw.id === id);
   }
 
-  saveSwitch(switchData: { type: string, id: string }): boolean {
-    if (!this.isSwitchIdUnique(switchData.id)) {
-      return false;
-    }
-
-    const container = this.containers.find(c => c.type === switchData.type);
-    if (container) {
-      container.switches.push(switchData);
-      this.containersSource.next([...this.containers]);
-      this.saveToStorage();
-      return true;
+  addSwitch(sw: Switch): boolean {
+    if (this.isSwitchIdUnique(sw.id)) {
+      const container = this.containers.find(c => c.type === sw.type);
+      if (container) {
+        container.switches.push(sw);
+        this.containersSource.next([...this.containers]);
+        this.saveToStorage();
+        return true;
+      }
     }
     return false;
   }

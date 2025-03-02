@@ -60,3 +60,23 @@ button {
   gap: 1rem;
   margin-top: 1rem;
 }
+
+.green-button {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+.green-button:disabled {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.26) !important;
+}
+
+.red-button {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.red-button:disabled {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.26) !important;
+}

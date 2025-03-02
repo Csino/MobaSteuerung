@@ -43,4 +43,21 @@
       <span class="signal-value">{{ getFormattedId() }}</span>
     </div>
   </div>
+
+  <div class="action-buttons">
+    <button mat-raised-button 
+            class="green-button"
+            (click)="onAdd()"
+            [disabled]="!isValid()">
+      Hinzufügen
+    </button>
+    <button mat-raised-button 
+            class="red-button"
+            [disabled]="!signalId"
+            (click)="onReset()">
+      Zurücksetzen
+    </button>
+  </div>
 </div>
+
+
