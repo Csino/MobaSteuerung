@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export interface Signal {
-  id: string;
+  id: string;        // Format: S1, S2, etc.
+  signalId: string;  // Nur die Nummer
   type: string;
   state: 'halt' | 'fahrt';
 }
@@ -42,7 +43,7 @@ export class SignalService {
     return !this.signals.some(signal => signal.id === id);
   }
 
-  saveSignal(signalData: { type: string, id: string }): boolean {
+  saveSignal(signalData: { type: string, id: string, signalId: string }): boolean {
     if (!this.isSignalIdUnique(signalData.id)) {
       return false;
     }

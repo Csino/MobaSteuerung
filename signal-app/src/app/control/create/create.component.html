@@ -2,20 +2,22 @@
   <mat-form-field appearance="fill">
     <mat-label>Kategorie</mat-label>
     <mat-select [(ngModel)]="selectedCategory" (ngModelChange)="onCategoryChange()">      
-      <mat-option value="signal">Signal</mat-option>
-      <mat-option value="weiche">Weiche</mat-option>
+      <mat-option [value]="ElementType.SIGNAL">Signal</mat-option>
+      <mat-option [value]="ElementType.SWITCH">Weiche</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <mat-label>Typ</mat-label>
-    <mat-select [(ngModel)]="selectedSignalType" (ngModelChange)="onSymbolTypeChange()">      
-      <ng-container *ngIf="selectedCategory === 'signal'">
+    <mat-select [ngModel]="selectedCategory === ElementType.SIGNAL ? selectedSignalType : selectedSwitchType" 
+                (ngModelChange)="selectedCategory === ElementType.SIGNAL ? (selectedSignalType = $event) : (selectedSwitchType = $event)"
+                (ngModelChange)="onSymbolTypeChange()">      
+      <ng-container *ngIf="selectedCategory === ElementType.SIGNAL">
         <mat-option value="einfahrsignal">Einfahrsignal</mat-option>
         <mat-option value="ausfahrsignal">Ausfahrsignal</mat-option>
         <mat-option value="blocksignal">Blocksignal</mat-option>        
       </ng-container>
-      <ng-container *ngIf="selectedCategory === 'weiche'">
+      <ng-container *ngIf="selectedCategory === ElementType.SWITCH">
         <mat-option value="rechtsweiche">Rechtsweiche</mat-option>
         <mat-option value="linksweiche">Linksweiche</mat-option>
         <mat-option value="doppelkreuzweiche">Doppelkreuzweiche</mat-option>
@@ -24,14 +26,14 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill">
-    <mat-label>{{ selectedCategory === 'signal' ? 'Signal' : 'Weichen' }} ID</mat-label>
+    <mat-label>{{ selectedCategory === ElementType.SIGNAL ? 'Signal' : 'Weichen' }} ID</mat-label>
     <input matInput 
            type="number" 
-           [(ngModel)]="signalId"
+           [(ngModel)]="elementId"
            (ngModelChange)="onSymbolIdChange()"
-           [placeholder]="selectedCategory === 'signal' ? 'Nummer eingeben (z.B. 1)' : 'Nummer eingeben (z.B. 1)'">
+           [placeholder]="'Nummer eingeben (z.B. 1)'">
     <mat-error *ngIf="isDuplicateId">Diese ID existiert bereits!</mat-error>
-    <mat-error *ngIf="!validateId(signalId)">Bitte nur Zahlen eingeben</mat-error>
+    <mat-error *ngIf="!validateId(getFormattedId())">Bitte nur Zahlen eingeben</mat-error>
   </mat-form-field>
 
   <div class="preview-container">
@@ -39,7 +41,7 @@
       <ng-container *ngComponentOutlet="getSignalIcon()"></ng-container>
     </div>
     <div class="signal-info">
-      <span class="signal-label">{{ selectedCategory === 'signal' ? 'Signal' : 'Weichen' }}-ID:</span>
+      <span class="signal-label">{{ selectedSignalType ? 'Signal' : (selectedSwitchType ? 'Weichen' : '') }}-ID:</span>
       <span class="signal-value">{{ getFormattedId() }}</span>
     </div>
   </div>
@@ -48,12 +50,12 @@
     <button mat-raised-button 
             class="green-button"
             (click)="onAdd()"
-            [disabled]="!isValid()">
+            [disabled]="!isValid() || !elementId || isDuplicateId">
       Hinzufügen
     </button>
     <button mat-raised-button 
             class="red-button"
-            [disabled]="!signalId"
+            [disabled]="!elementId"
             (click)="onReset()">
       Zurücksetzen
     </button>

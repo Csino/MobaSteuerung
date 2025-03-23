@@ -14,8 +14,13 @@ import { RightSwitchSymbolComponent } from '../image/rightswitch.component';
 import { DoubleCrossSwitchComponent } from '../image/doublecrossswitch.component';
 import { SignalService } from "../../services/signal.service";
 import { SwitchService } from "../../services/switch.service"; 
-import { Signal } from "../../services/signal.service";
-import { Switch } from "../../services/switch.service";
+
+// Neue Enum-Definition am Anfang der Datei
+enum ElementType {
+  SIGNAL = 'signal',
+  SWITCH = 'weiche',
+  CONTROL_ELEMENT = 'control_element'
+}
 
 @Component({
   selector: 'app-create',
@@ -33,16 +38,20 @@ import { Switch } from "../../services/switch.service";
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent {
+  readonly ElementType = ElementType; // Für Template-Zugriff
+  selectedCategory: ElementType = ElementType.CONTROL_ELEMENT; // Standardmäßig auf CONTROL_ELEMENT gesetzt
+
+  
+  selectedSignalType: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | '' = '';
+  selectedSwitchType: 'rechtsweiche' | 'linksweiche' | 'doppelkreuzweiche' | '' = '';
+  elementId: string = ''; // Initialisierung der elementId
+  isDuplicateId = false;
+  associatedSwitches: string [] = []; // Initialisierung der associatedSwitchId
+
   constructor(
     private signalService: SignalService, // Hinzufügen des SignalService
     private switchService: SwitchService  // Hinzufügen des SwitchService
   ) { }
-
-  selectedCategory: 'signal' | 'weiche' = 'signal';
-  selectedSignalType: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | 'rechtsweiche' | 'linksweiche' | 'doppelkreuzweiche' | '' = '';
-  signalId: string = ''; // Initialisierung der signalId
-  isDuplicateId = false;
-  associatedSwitches: string [] = []; // Initialisierung der associatedSwitchId
 
   validateSignalId(id: string): boolean {
     const signalPattern = /^S\d+$/;
@@ -54,43 +63,33 @@ export class CreateComponent {
     return switchPattern.test(id);
   }
 
-  onSignalIdChange() {
-    this.isDuplicateId = !this.signalService.isSignalIdUnique(this.signalId);
-  }
-
-  onSignalTypeChange() {
-    // Keine automatische Aktualisierung mehr
-  }
-
-  getSymbolIcon(): Type<any> {
-    switch(this.selectedSignalType) {
-      case 'blocksignal':
-        return BlockSignalSymbolComponent;
-      case 'einfahrsignal':
-        return EntrySignalSymbolComponent;
-      case 'ausfahrsignal':
-        return ExitSignalSymbolComponent;
-      default:
-        return BlockSignalSymbolComponent;
+  onSymbolIdChange(): void {
+    this.elementId = this.elementId.replace(/[^0-9]/g, '');
+    const formattedId = this.getFormattedId();
+    
+    if (!formattedId) {
+      this.isDuplicateId = false;
+      return;
+    }
+    
+    if (this.selectedSignalType) {
+      this.isDuplicateId = !this.signalService.isSignalIdUnique(formattedId);
+    } else if (this.selectedSwitchType) {
+      this.isDuplicateId = !this.switchService.isSwitchIdUnique(formattedId);
     }
   }
 
-  resetForm() {
-    this.selectedSignalType = '';
-    this.signalId = '';
-    this.isDuplicateId = false;
-    this.associatedSwitches = []; // Zurücksetzen der Weichen
-  }
-
   saveSignal(): void {
-    if (this.signalId && this.selectedSignalType) {
-      if (!this.validateSignalId(this.signalId)) {
+    if (this.elementId && this.selectedSignalType) {
+      const formattedId = `S${this.elementId}`;
+      if (!this.validateSignalId(formattedId)) {
         return;
       }
 
       const signalData = {
         type: this.selectedSignalType,
-        id: this.signalId,
+        id: formattedId,
+        signalId: this.elementId,
         switches: this.associatedSwitches
       };
 
@@ -98,10 +97,37 @@ export class CreateComponent {
 
       if (success) {
         this.isDuplicateId = false;
-        this.resetForm();
+        this.onReset();
       } else {
         this.isDuplicateId = true;
       }
+    }
+  }
+
+  saveSwitch(): void {
+    if (!this.elementId || !this.selectedSwitchType) {
+      console.log('Missing data:', { id: this.elementId, type: this.selectedSwitchType });
+      return;
+    }
+
+    const formattedId = `W${this.elementId}`;
+    console.log('Formatted ID:', formattedId);
+
+    const switchData = {
+      type: this.selectedSwitchType,
+      id: formattedId
+    };
+
+    console.log('Saving switch:', switchData);
+    const success = this.switchService.saveSwitch(switchData);
+    
+    if (success) {
+      console.log('Switch saved successfully');
+      this.isDuplicateId = false;
+      this.onReset();
+    } else {
+      console.log('Failed to save switch');
+      this.isDuplicateId = true;
     }
   }
 
@@ -132,105 +158,100 @@ export class CreateComponent {
 
   onCategoryChange(): void {
     this.selectedSignalType = '';
-    this.signalId = '';
+    this.selectedSwitchType = '';
+    this.elementId = '';
     this.isDuplicateId = false;
   }
 
   onSymbolTypeChange(): void {
-    this.signalId = '';
+    this.elementId = '';
     this.isDuplicateId = false;
-  }
-
-  onSymbolIdChange(): void {
-    // Nur Zahlen erlauben
-    this.signalId = this.signalId.replace(/[^0-9]/g, '');
-    
-    const formattedId = this.getFormattedId();
-    if (this.selectedCategory === 'signal') {
-      this.isDuplicateId = !this.signalService.isSignalIdUnique(formattedId);
+    // Signal oder Switch Type setzen
+    if (this.selectedCategory === ElementType.SIGNAL) {
+      this.selectedSwitchType = '';
     } else {
-      this.isDuplicateId = !this.switchService.isSwitchIdUnique(formattedId);
+      this.selectedSignalType = '';
     }
   }
 
   validateId(id: string): boolean {
-    if (!id) return true;
-    return /^\d+$/.test(id.toString());
+    if (!id) return false;
+    const prefix = this.selectedCategory === ElementType.SIGNAL ? 'S' : 'W';
+    const pattern = new RegExp(`^${prefix}\\d+$`);
+    return pattern.test(id);
   }
 
   getFormattedId(): string {
-    if (!this.signalId) return 'Keine ID';
-    const prefix = this.selectedCategory === 'signal' ? 'S' : 'W';
-    return `${prefix}${this.signalId}`;
+    if (!this.elementId) return '';
+    const prefix = this.selectedCategory === ElementType.SIGNAL ? 'S' : 'W';
+    const formattedId = `${prefix}${this.elementId}`;
+    return this.validateId(formattedId) ? formattedId : '';
   }
 
-  getSignalIcon(): Type<any> {
-    if (this.selectedCategory === 'signal') {
-      switch(this.selectedSignalType) {
-        case 'blocksignal':
-          return BlockSignalSymbolComponent;
-        case 'einfahrsignal':
-          return EntrySignalSymbolComponent;
-        case 'ausfahrsignal':
-          return ExitSignalSymbolComponent;
-        default:
-          return BlockSignalSymbolComponent; // Standardkomponente zurückgeben
-      }
-    } else if (this.selectedCategory === 'weiche') {
-      switch(this.selectedSignalType) {
-        case 'rechtsweiche':
-          return RightSwitchSymbolComponent;
-        case 'linksweiche':
-          return LeftSwitchSymbolComponent;
-        case 'doppelkreuzweiche':
-          return DoubleCrossSwitchComponent;
-        default:
-          return RightSwitchSymbolComponent; // Standardkomponente zurückgeben
-      }
+  // Typ-Unterscheidung verbessern
+  getSelectedType(): string {
+    // CONTROL_ELEMENT erlaubt beide Typen
+    if (this.selectedCategory === ElementType.CONTROL_ELEMENT) {
+      return this.selectedSignalType || this.selectedSwitchType;
     }
-    return BlockSignalSymbolComponent; // Standardkomponente zurückgeben
+    return this.selectedSignalType;
   }
 
   isValid(): boolean {
-    return Boolean(
-      this.selectedCategory 
-      && this.selectedSignalType 
-      && this.signalId 
-      && !this.isDuplicateId 
-      && this.validateId(this.signalId)
-    );
+    const formattedId = this.getFormattedId();
+    if (!formattedId || this.isDuplicateId) {
+      return false;
+    }
+
+    // Prüfe ob ein Typ ausgewählt wurde
+    if (this.selectedCategory === ElementType.SWITCH) {
+      return Boolean(this.selectedSwitchType);
+    }
+    if (this.selectedCategory === ElementType.SIGNAL) {
+      return Boolean(this.selectedSignalType);
+    }
+    return false;
   }
 
   onAdd(): void {
     const formattedId = this.getFormattedId();
+    if (!this.isValid() || !formattedId) return;
     
-    if (this.selectedCategory === 'signal') {
-      const signalData: Signal = {
-        id: formattedId,
-        type: this.selectedSignalType,
-        state: 'halt' as const
-      };
-      
-      if (this.signalService.addSignal(signalData)) {
-        this.onReset();
-      }
+    if (this.selectedCategory === ElementType.SIGNAL) {
+      this.saveSignal();
     } else {
-      const switchData: Switch = {
-        id: formattedId,
-        type: this.selectedSignalType,
-        position: 'gerade' as const
-      };
-      
-      if (this.switchService.addSwitch(switchData)) {
-        this.onReset();
-      }
+      this.saveSwitch();
     }
   }
 
+  getSignalIcon(): Type<any> {
+    const selectedType = this.getSelectedType();
+    
+    if (this.selectedCategory === ElementType.SIGNAL) {
+      switch(selectedType) {
+        case 'blocksignal': return BlockSignalSymbolComponent;
+        case 'einfahrsignal': return EntrySignalSymbolComponent;
+        case 'ausfahrsignal': return ExitSignalSymbolComponent;
+        default: return BlockSignalSymbolComponent;
+      }
+    } else if (this.selectedCategory === ElementType.SWITCH) {
+      switch(selectedType) {
+        case 'rechtsweiche': return RightSwitchSymbolComponent;
+        case 'linksweiche': return LeftSwitchSymbolComponent;
+        case 'doppelkreuzweiche': return DoubleCrossSwitchComponent;
+        default: return RightSwitchSymbolComponent;
+      }
+    }
+    return BlockSignalSymbolComponent;
+  }
+
   onReset(): void {
-    this.selectedCategory = 'signal';
+    this.selectedCategory = ElementType.CONTROL_ELEMENT;
     this.selectedSignalType = '';
-    this.signalId = '';
+    this.selectedSwitchType = '';
+    this.elementId = '';
     this.isDuplicateId = false;
+    this.associatedSwitches = [];
   }
 }
+
