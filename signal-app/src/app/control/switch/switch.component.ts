@@ -4,6 +4,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SwitchService } from '../../services/switch.service';
+import { LeftSwitchSymbolComponent } from '../image/leftswitch.component';
+import { RightSwitchSymbolComponent } from '../image/rightswitch.component';
+import { DoubleCrossSwitchComponent } from '../image/doublecrossswitch.component';
 
 @Component({
   selector: 'app-switch',
@@ -30,8 +33,16 @@ export class SwitchComponent implements OnInit {
     this.switchService.removeSwitch(type, id);
   }
 
+  togglePosition(type: string, id: string): void {
+    this.switchService.toggleSwitchPosition(type, id);
+  }
+
   getSwitchComponent(type: string): any {
-    // TODO: Implementieren Sie hier die Komponenten-Logik für verschiedene Weichentypen
-    return null;
+    switch(type) {
+      case 'rechtsweiche': return RightSwitchSymbolComponent;
+      case 'linksweiche': return LeftSwitchSymbolComponent;
+      case 'doppelkreuzweiche': return DoubleCrossSwitchComponent;
+      default: return null;
+    }
   }
 }

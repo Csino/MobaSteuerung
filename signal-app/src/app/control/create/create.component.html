@@ -37,8 +37,16 @@
   </mat-form-field>
 
   <div class="preview-container">
-    <div class="signal-icon">
-      <ng-container *ngComponentOutlet="getSignalIcon()"></ng-container>
+    <div class="switch-preview" (click)="togglePreviewPosition()">
+      <ng-container *ngComponentOutlet="getSignalIcon();
+                    inputs: {
+                      switchData: {
+                        type: selectedSwitchType,
+                        id: getFormattedId(),
+                        position: previewPosition
+                      }
+                    }">
+      </ng-container>
     </div>
     <div class="signal-info">
       <span class="signal-label">{{ selectedCategory === ElementType.SWITCH ? 'Weichen' : 'Signal' }}-ID:</span>

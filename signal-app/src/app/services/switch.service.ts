@@ -52,7 +52,25 @@ export class SwitchService {
     return this.switches.some(sw => sw.id === formattedId);
   }
 
-  saveSwitch(switchData: { type: string; id: string }): boolean {
+  private validateSwitchData(switchData: { type: string; id: string; position: 'gerade' | 'abzweig' }): boolean {
+    const validTypes = ['rechtsweiche', 'linksweiche', 'doppelkreuzweiche'];
+    if (!validTypes.includes(switchData.type)) {
+      console.error(`Invalid switch type: ${switchData.type}`);
+      return false;
+    }
+    
+    if (!/^W\d+$/.test(switchData.id)) {
+      console.error('Switch ID must be in format "W" followed by numbers');
+      return false;
+    }
+    
+    return true;
+  }
+
+  saveSwitch(switchData: { type: string; id: string; position: 'gerade' | 'abzweig' }): boolean {
+    if (!this.validateSwitchData(switchData)) {
+      return false;
+    }
     console.log('Saving switch:', switchData);
     
     // Prüfe ob die ID bereits existiert
@@ -73,7 +91,7 @@ export class SwitchService {
     const newSwitch: Switch = {
       type: switchData.type,
       id: switchData.id,
-      position: 'gerade'
+      position: switchData.position
     };
     
     // Füge die neue Weiche hinzu
@@ -95,8 +113,29 @@ export class SwitchService {
     const container = this.containers.find(c => c.type === type);
     if (container) {
       container.switches = container.switches.filter(s => s.id !== id);
+      // Aktualisiere auch das zentrale switches-Array
+      this.switches = this.switches.filter(s => s.id !== id);
       this.containersSource.next([...this.containers]);
       this.saveToStorage();
     }
+  }
+
+  toggleSwitchPosition(type: string, id: string): boolean {
+    const container = this.containers.find(c => c.type === type);
+    if (!container) {
+      console.error(`Container with type ${type} not found`);
+      return false;
+    }
+
+    const switchItem = container.switches.find(s => s.id === id);
+    if (!switchItem) {
+      console.error(`Switch with id ${id} not found`);
+      return false;
+    }
+
+    switchItem.position = switchItem.position === 'gerade' ? 'abzweig' : 'gerade';
+    this.containersSource.next([...this.containers]);
+    this.saveToStorage();
+    return true;
   }
 }

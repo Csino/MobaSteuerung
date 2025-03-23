@@ -9,8 +9,12 @@
           </button>
           <mat-card-content>
             <div class="switch-item">
-              <div class="switch-icon">
-                <ng-container *ngComponentOutlet="getSwitchComponent(switch.type)">
+              <div class="switch-icon" (click)="togglePosition(container.type, switch.id)">
+                <ng-container *ngComponentOutlet="getSwitchComponent(switch.type);
+                             inputs: {
+                               switchData: switch,
+                               position: switch.position
+                             }">
                 </ng-container>
               </div>
               <div class="switch-info">

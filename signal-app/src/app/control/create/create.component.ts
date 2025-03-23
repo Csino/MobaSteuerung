@@ -47,6 +47,7 @@ export class CreateComponent implements OnInit {
   elementId: string = ''; // Initialisierung der elementId
   isDuplicateId = false;
   associatedSwitches: string [] = []; // Initialisierung der associatedSwitchId
+  previewPosition: 'gerade' | 'abzweig' = 'gerade';
 
   constructor(
     private signalService: SignalService, // Hinzufügen des SignalService
@@ -120,7 +121,8 @@ export class CreateComponent implements OnInit {
 
     const switchData = {
       type: this.selectedSwitchType,
-      id: formattedId
+      id: formattedId,
+      position: this.previewPosition  // Position hinzufügen
     };
 
     console.log('Saving switch:', switchData);
@@ -171,7 +173,8 @@ export class CreateComponent implements OnInit {
   onSymbolTypeChange(): void {
     this.elementId = '';
     this.isDuplicateId = false;
-    // Signal oder Switch Type setzen
+    this.previewPosition = 'gerade'; // Position zurücksetzen
+    
     if (this.selectedCategory === ElementType.SIGNAL) {
       this.selectedSwitchType = '';
     } else {
@@ -230,17 +233,15 @@ export class CreateComponent implements OnInit {
   }
 
   getSignalIcon(): Type<any> {
-    const selectedType = this.getSelectedType();
-    
     if (this.selectedCategory === ElementType.SIGNAL) {
-      switch(selectedType) {
+      switch(this.selectedSignalType) {
         case 'blocksignal': return BlockSignalSymbolComponent;
         case 'einfahrsignal': return EntrySignalSymbolComponent;
         case 'ausfahrsignal': return ExitSignalSymbolComponent;
         default: return BlockSignalSymbolComponent;
       }
     } else if (this.selectedCategory === ElementType.SWITCH) {
-      switch(selectedType) {
+      switch(this.selectedSwitchType) {
         case 'rechtsweiche': return RightSwitchSymbolComponent;
         case 'linksweiche': return LeftSwitchSymbolComponent;
         case 'doppelkreuzweiche': return DoubleCrossSwitchComponent;
@@ -250,6 +251,12 @@ export class CreateComponent implements OnInit {
     return BlockSignalSymbolComponent;
   }
 
+  togglePreviewPosition(): void {
+    if (this.selectedCategory === ElementType.SWITCH) {
+      this.previewPosition = this.previewPosition === 'gerade' ? 'abzweig' : 'gerade';
+    }
+  }
+
   onReset(): void {
     this.selectedCategory = ElementType.CONTROL_ELEMENT;
     this.selectedSignalType = '';
@@ -257,6 +264,7 @@ export class CreateComponent implements OnInit {
     this.elementId = '';
     this.isDuplicateId = false;
     this.associatedSwitches = [];
+    this.previewPosition = 'gerade';
   }
 }
 
