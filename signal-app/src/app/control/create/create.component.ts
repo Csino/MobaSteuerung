@@ -1,4 +1,4 @@
-import { Component, Type } from '@angular/core';
+import { Component, Type, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,7 +37,7 @@ enum ElementType {
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent {
+export class CreateComponent implements OnInit {
   readonly ElementType = ElementType; // Für Template-Zugriff
   selectedCategory: ElementType = ElementType.CONTROL_ELEMENT; // Standardmäßig auf CONTROL_ELEMENT gesetzt
 
@@ -53,6 +53,10 @@ export class CreateComponent {
     private switchService: SwitchService  // Hinzufügen des SwitchService
   ) { }
 
+  ngOnInit(): void {
+    // Initialisierungslogik hier, falls erforderlich
+  }
+
   validateSignalId(id: string): boolean {
     const signalPattern = /^S\d+$/;
     return signalPattern.test(id);
@@ -64,18 +68,19 @@ export class CreateComponent {
   }
 
   onSymbolIdChange(): void {
-    this.elementId = this.elementId.replace(/[^0-9]/g, '');
-    const formattedId = this.getFormattedId();
-    
-    if (!formattedId) {
+    if (this.elementId) {
+      this.isDuplicateId = this.checkForDuplicateId();
+    } else {
       this.isDuplicateId = false;
-      return;
     }
-    
-    if (this.selectedSignalType) {
-      this.isDuplicateId = !this.signalService.isSignalIdUnique(formattedId);
-    } else if (this.selectedSwitchType) {
-      this.isDuplicateId = !this.switchService.isSwitchIdUnique(formattedId);
+  }
+
+  private checkForDuplicateId(): boolean {
+    // Prüfe ob die ID bereits existiert
+    if (this.selectedCategory === ElementType.SIGNAL) {
+      return this.signalService.hasSignalWithId(this.elementId);
+    } else {
+      return this.switchService.hasSwitchWithId(this.elementId);
     }
   }
 

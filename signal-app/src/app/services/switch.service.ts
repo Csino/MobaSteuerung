@@ -47,6 +47,11 @@ export class SwitchService {
     return !this.switches.some(sw => sw.id === id);
   }
 
+  hasSwitchWithId(id: string): boolean {
+    const formattedId = `W${id}`;
+    return this.switches.some(sw => sw.id === formattedId);
+  }
+
   saveSwitch(switchData: { type: string; id: string }): boolean {
     console.log('Saving switch:', switchData);
     

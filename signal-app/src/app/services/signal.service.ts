@@ -32,6 +32,11 @@ export class SignalService {
       { type: 'ausfahrsignal', title: 'Ausfahrsignal', signals: [] },
       { type: 'blocksignal', title: 'Blocksignal', signals: [] }
     ];
+    // Signals aus allen Containern sammeln
+    this.signals = [];
+    this.containers.forEach(container => {
+      this.signals.push(...container.signals);
+    });
     this.containersSource.next(this.containers);
   }
 
@@ -43,8 +48,16 @@ export class SignalService {
     return !this.signals.some(signal => signal.id === id);
   }
 
+  hasSignalWithId(id: string): boolean {
+    const formattedId = `S${id}`;
+    return this.signals.some(signal => signal.id === formattedId);
+  }
+
   saveSignal(signalData: { type: string, id: string, signalId: string }): boolean {
+    console.log('Saving signal:', signalData);
+    
     if (!this.isSignalIdUnique(signalData.id)) {
+      console.log('Signal ID already exists');
       return false;
     }
 
@@ -52,13 +65,19 @@ export class SignalService {
     if (container) {
       const newSignal: Signal = {
         ...signalData,
-        state: 'halt' // Standardzustand für neue Signale
+        state: 'halt'
       };
+      
+      // Füge das Signal sowohl zum Container als auch zur signals-Liste hinzu
       container.signals.push(newSignal);
+      this.signals.push(newSignal);
+      
       this.containersSource.next([...this.containers]);
       this.saveToStorage();
+      console.log('Signal saved successfully');
       return true;
     }
+    console.log('No container found for type:', signalData.type);
     return false;
   }
 
