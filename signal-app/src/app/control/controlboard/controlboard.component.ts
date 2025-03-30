@@ -5,7 +5,7 @@ import { RouterOutlet,RouterLink } from '@angular/router';
 @Component({
   selector: 'app-controlboard',
   templateUrl: './controlboard.component.html',
-  styleUrls: ['./controlboard.component.css'],
+  styleUrls: ['./controlboard.component.scss'],
   imports: [RouterLink,
     RouterOutlet
     ],
