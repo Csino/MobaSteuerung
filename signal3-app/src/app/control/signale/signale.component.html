@@ -1,0 +1,26 @@
+<div class="container">
+  <ng-container *ngFor="let container of containers$ | async">
+    <div class="signal-section">
+      <h3>{{container.title}}</h3>
+      <div class="signals-list">
+        <mat-card *ngFor="let signal of container.signals" class="signal-card">
+          <button mat-icon-button color="warn" class="delete-button" (click)="deleteSignal(container.type, signal.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <mat-card-content>
+            <div class="signal-item">
+              <div class="signal-icon">
+                <ng-container *ngComponentOutlet="getSignalComponent(signal.type)">
+                </ng-container>
+              </div>
+              <div class="signal-info">
+                <span class="signal-label">Signal ID:</span>
+                <span class="signal-value">{{signal.id}}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </ng-container>
+</div>
