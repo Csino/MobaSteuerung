@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
+import { MqttService } from '../../services/mqtt.service';
 
 @Component({
   imports: [CommonModule],
@@ -32,6 +33,9 @@ export class BlockSignalSymbolComponent {
   @Input() height = 45;
   @Input() radius = 5;
   @Input() fill = 'black';
+  @Input() signalId = '';
+
+  constructor(private mqttService: MqttService) {}
 
   circleRadius = 3;
   circles = [
@@ -65,7 +69,14 @@ export class BlockSignalSymbolComponent {
         signalAspect = 'Hp1';
         break;      
     }
-    console.log('Signal zeigt:', signalAspect);  
+    console.log('Signal', this.signalId, 'zeigt:', signalAspect);
+    
+    // MQTT-Nachricht senden
+    const message = JSON.stringify({
+      id: this.signalId,
+      aspect: signalAspect
+    });
+    this.mqttService.publishMessage('/Moba/ESPNetzwerk', message);
   }
 
   onCircleMouseOver(event: MouseEvent): void {

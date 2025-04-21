@@ -10,7 +10,10 @@
           <mat-card-content>
             <div class="signal-item">
               <div class="signal-icon">
-                <ng-container *ngComponentOutlet="getSignalComponent(signal.type)">
+                <ng-container *ngComponentOutlet="getSignalComponent(signal.type);
+                               inputs: {
+                                 signalId: signal.id
+                               }">
                 </ng-container>
               </div>
               <div class="signal-info">
