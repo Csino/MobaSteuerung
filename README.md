@@ -1,2 +1,0 @@
-# MobaSteuerung
-Modelleisenbahnsteuerung in Angular
