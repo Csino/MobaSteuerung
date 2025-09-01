@@ -34,8 +34,8 @@
     "zone.js": "latest"
   },
   "devDependencies": {
-    "@angular/build": "latest",
-    "@angular/cli": "latest",
+    "@angular/build": "20.2.1",
+    "@angular/cli": "20.2.1",
     "@angular/compiler-cli": "latest",
     "@types/d3": "latest",
     "@types/jasmine": "latest",
