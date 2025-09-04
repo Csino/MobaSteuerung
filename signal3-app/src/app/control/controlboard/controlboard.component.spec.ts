@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterModule } from '@angular/router';
 import { ControlboardComponent } from './controlboard.component';
+import { MqttService } from '../../services/mqtt.service';
 
 describe('ControlboardComponent', () => {
   let component: ControlboardComponent;
@@ -8,7 +9,8 @@ describe('ControlboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ControlboardComponent]
+      imports: [ControlboardComponent, RouterModule.forRoot([])],
+      providers: [MqttService]
     })
     .compileComponents();
 
