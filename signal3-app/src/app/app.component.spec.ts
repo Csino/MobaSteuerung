@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
 import { MqttService } from './services/mqtt.service';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent, RouterModule.forRoot([])],
+      imports: [AppComponent],
       providers: [MqttService]
     }).compileComponents();
   });
@@ -20,6 +19,7 @@ describe('AppComponent', () => {
   it('should have the MqttService injected', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app['mqttService']).toBeTruthy();
+    const mqttService = TestBed.inject(MqttService);
+    expect(mqttService).toBeTruthy();
   });
 });
