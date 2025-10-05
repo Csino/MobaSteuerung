@@ -5,11 +5,11 @@ import * as d3 from 'd3';
 @Component({
   imports: [CommonModule],
   standalone: true,
-  selector: 'app-exitsignalsymbol',
+  selector: 'app-vorsignalsymbol',
   template: `
     <svg [attr.width]="width" [attr.height]="height">
       <path
-        [attr.d]="exitSignalSymbol()"
+        [attr.d]="vorsignalSymbol()"
         [attr.fill]="fill"
         stroke="black"
         stroke-width="1"
@@ -27,7 +27,7 @@ import * as d3 from 'd3';
     </svg>
   `
 })
-export class ExitSignalSymbolComponent {
+export class VorsignalSymbolComponent {
   @Input() width = 20;
   @Input() height = 45;
   @Input() radius = 5;
@@ -36,18 +36,13 @@ export class ExitSignalSymbolComponent {
 
   circleRadius = 3;
   circles = [
-    { cx: this.circleRadius * 1.6, cy: this.circleRadius * 2, fill: 'green' }, // Rechts oben
-    { cx: this.circleRadius * 1.6, cy: this.height / 3, fill: 'red' }, // Etwas weiter rechts
-    { cx: this.width - (this.circleRadius * 1.6), cy: this.height / 3, fill: 'red' }, // Etwas weiter links
-    { cx: this.width - (this.circleRadius * 1.6), cy: this.height / 2, fill: 'white' }, // Etwas weiter links
-    { cx: this.circleRadius * 1.6, cy: this.height / 1.5, fill: 'white' }, // links mittig unten
-    { cx: this.circleRadius * 1.6, cy: this.height / 1.15, fill: 'yellow' } // links unten
+    { cx: this.circleRadius * 1.6, cy: this.height / 3, fill: 'yellow' }, // Oben links
+    { cx: this.width - (this.circleRadius * 1.6), cy: this.height / 3, fill: 'green' }, // Oben rechts
+    { cx: this.circleRadius * 1.6, cy: this.height / 1.5, fill: 'yellow' }, // Unten links
+    { cx: this.width - (this.circleRadius * 1.6), cy: this.height / 1.5, fill: 'green' } // Unten rechts
   ];
 
-  
-  
-
-  exitSignalSymbol(): string {
+  vorsignalSymbol(): string {
     const path = d3.path();
     
     path.moveTo(0, this.height);
@@ -62,23 +57,18 @@ export class ExitSignalSymbolComponent {
     
     return path.toString();
   }
+
   onCircleClick(circle: { cx: number, cy: number, fill: string }): void {
     let signalAspect;
     switch (circle.fill) {
-      case 'red':
-        signalAspect = 'Hp0';
+      case 'yellow':
+        signalAspect = 'Vr0'; // Halt erwarten
         break;
       case 'green':
-        signalAspect = 'Hp1';
-        break;
-      case 'yellow':
-        signalAspect = 'Hp2';
-        break;
-      case 'white':
-        signalAspect = 'Sh1';
+        signalAspect = 'Vr1'; // Fahrt erwarten
         break;
     }
-    console.log('Signal zeigt:', signalAspect);
+    console.log('Vorsignal zeigt:', signalAspect);
   }
 
   onCircleMouseOver(event: MouseEvent): void {

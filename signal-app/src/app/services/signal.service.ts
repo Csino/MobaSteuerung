@@ -4,8 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 export interface Signal {
   id: string;        // Format: S1, S2, etc.
   signalId: string;  // Nur die Nummer
-  type: string;
+  type: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | 'vorsignal';
   state: 'halt' | 'fahrt';
+  switches?: string[];  // Optionales Array für assoziierte Weichen
 }
 
 interface SignalContainer {
@@ -30,7 +31,8 @@ export class SignalService {
     this.containers = saved ? JSON.parse(saved) : [
       { type: 'einfahrsignal', title: 'Einfahrsignal', signals: [] },
       { type: 'ausfahrsignal', title: 'Ausfahrsignal', signals: [] },
-      { type: 'blocksignal', title: 'Blocksignal', signals: [] }
+      { type: 'blocksignal', title: 'Blocksignal', signals: [] },
+      { type: 'vorsignal', title: 'Vorsignal', signals: [] }
     ];
     // Signals aus allen Containern sammeln
     this.signals = [];
@@ -53,7 +55,7 @@ export class SignalService {
     return this.signals.some(signal => signal.id === formattedId);
   }
 
-  saveSignal(signalData: { type: string, id: string, signalId: string }): boolean {
+  saveSignal(signalData: { type: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | 'vorsignal', id: string, signalId: string, switches?: string[] }): boolean {
     console.log('Saving signal:', signalData);
     
     if (!this.isSignalIdUnique(signalData.id)) {
@@ -65,7 +67,8 @@ export class SignalService {
     if (container) {
       const newSignal: Signal = {
         ...signalData,
-        state: 'halt'
+        state: 'halt',
+        switches: signalData.switches || []
       };
       
       // Füge das Signal sowohl zum Container als auch zur signals-Liste hinzu

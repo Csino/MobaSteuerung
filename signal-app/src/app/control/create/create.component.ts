@@ -12,6 +12,7 @@ import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol.component';
 import { LeftSwitchSymbolComponent } from '../image/leftswitch.component';
 import { RightSwitchSymbolComponent } from '../image/rightswitch.component';
 import { DoubleCrossSwitchComponent } from '../image/doublecrossswitch.component';
+import { VorsignalSymbolComponent } from '../image/vorsignalsymbol.component';
 import { SignalService } from "../../services/signal.service";
 import { SwitchService } from "../../services/switch.service"; 
 
@@ -42,7 +43,7 @@ export class CreateComponent implements OnInit {
   selectedCategory: ElementType = ElementType.CONTROL_ELEMENT; // Standardmäßig auf CONTROL_ELEMENT gesetzt
 
   
-  selectedSignalType: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | '' = '';
+  selectedSignalType: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | 'vorsignal' | '' = '';
   selectedSwitchType: 'rechtsweiche' | 'linksweiche' | 'doppelkreuzweiche' | '' = '';
   elementId: string = ''; // Initialisierung der elementId
   isDuplicateId = false;
@@ -238,6 +239,7 @@ export class CreateComponent implements OnInit {
         case 'blocksignal': return BlockSignalSymbolComponent;
         case 'einfahrsignal': return EntrySignalSymbolComponent;
         case 'ausfahrsignal': return ExitSignalSymbolComponent;
+        case 'vorsignal': return VorsignalSymbolComponent;
         default: return BlockSignalSymbolComponent;
       }
     } else if (this.selectedCategory === ElementType.SWITCH) {

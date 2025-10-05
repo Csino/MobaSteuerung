@@ -7,6 +7,7 @@ import { SignalService } from '../../services/signal.service';
 import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol.component';
 import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol.component';
 import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol.component';
+import { VorsignalSymbolComponent } from '../image/vorsignalsymbol.component';
 
 interface SignalContainer {
   type: string;
@@ -24,7 +25,11 @@ interface SignalContainer {
     CommonModule,
     MatCardModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    BlockSignalSymbolComponent,
+    EntrySignalSymbolComponent,
+    ExitSignalSymbolComponent,
+    VorsignalSymbolComponent
   ],
   templateUrl: './signale.component.html',
   styleUrls: ['./signale.component.scss']
@@ -43,20 +48,6 @@ export class SignaleComponent implements OnInit {
 
   ngOnInit() {
     // Initialisierung kann hier erfolgen, falls nötig
-  }
-
-  // Hilfsmethode zum Überprüfen des Typs
-  getSignalComponent(type: string): any {
-    switch(type) {
-      case 'blocksignal':
-        return BlockSignalSymbolComponent;
-      case 'einfahrsignal':
-        return EntrySignalSymbolComponent;
-      case 'ausfahrsignal':
-        return ExitSignalSymbolComponent;
-      default:
-        return null;
-    }
   }
 
   deleteSignal(type: string, id: string): void {

@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 @Component({
   imports: [CommonModule],
   standalone: true,
-  selector: 'app-blocksignal-symbol',
+  selector: 'app-blocksignalsymbol',
   template: `
     <svg [attr.width]="width" [attr.height]="height">
       <path
@@ -32,6 +32,7 @@ export class BlockSignalSymbolComponent {
   @Input() height = 45;
   @Input() radius = 5;
   @Input() fill = 'black';
+  @Input() signalData: any;
 
   circleRadius = 3;
   circles = [

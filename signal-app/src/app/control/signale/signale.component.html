@@ -1,21 +1,55 @@
 <div class="container">
   <ng-container *ngFor="let container of containers$ | async">
     <div class="signal-section">
-      <h3>{{container.title}}</h3>
+      <h3>{{ container.title }}</h3>
       <div class="signals-list">
         <mat-card *ngFor="let signal of container.signals" class="signal-card">
-          <button mat-icon-button color="warn" class="delete-button" (click)="deleteSignal(container.type, signal.id)">
+          <button
+            mat-icon-button
+            color="warn"
+            class="delete-button"
+            (click)="deleteSignal(container.type, signal.id)"
+          >
             <mat-icon>delete</mat-icon>
           </button>
           <mat-card-content>
             <div class="signal-item">
               <div class="signal-icon">
-                <ng-container *ngComponentOutlet="getSignalComponent(signal.type)">
-                </ng-container>
+                <!-- Blocksignal -->
+                <app-blocksignalsymbol
+                  *ngIf="signal.type === 'blocksignal'"
+                  [signalData]="signal"
+                  [width]="40"
+                  [height]="60"
+                ></app-blocksignalsymbol>
+
+                <!-- Einfahrsignal -->
+                <app-entrysignalsymbol
+                  *ngIf="signal.type === 'einfahrsignal'"
+                  [signalData]="signal"
+                  [width]="40"
+                  [height]="60"
+                ></app-entrysignalsymbol>
+
+                <!-- Ausfahrsignal -->
+                <app-exitsignalsymbol
+                  *ngIf="signal.type === 'ausfahrsignal'"
+                  [signalData]="signal"
+                  [width]="40"
+                  [height]="60"
+                ></app-exitsignalsymbol>
+
+                <!-- Vorsignal -->
+                <app-vorsignalsymbol
+                  *ngIf="signal.type === 'vorsignal'"
+                  [signalData]="signal"
+                  [width]="40"
+                  [height]="60"
+                ></app-vorsignalsymbol>
               </div>
               <div class="signal-info">
                 <span class="signal-label">Signal ID:</span>
-                <span class="signal-value">{{signal.id}}</span>
+                <span class="signal-value">{{ signal.id }}</span>
               </div>
             </div>
           </mat-card-content>
