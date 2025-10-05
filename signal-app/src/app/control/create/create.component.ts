@@ -1,4 +1,4 @@
-import { Component, Type, OnInit } from '@angular/core';
+import { Component, Type, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,7 +36,8 @@ enum ElementType {
     MatButtonModule
   ],
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  styleUrls: ['./create.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateComponent implements OnInit {
   readonly ElementType = ElementType; // Für Template-Zugriff

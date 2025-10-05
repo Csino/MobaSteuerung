@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
 
@@ -27,20 +27,33 @@ import * as d3 from 'd3';
     </svg>
   `
 })
-export class VorsignalSymbolComponent {
-  @Input() width = 20;
-  @Input() height = 45;
+export class VorsignalSymbolComponent implements OnInit {
+  @Input() width = 40;
+  @Input() height = 60;
   @Input() radius = 5;
   @Input() fill = 'black';
-  @Input() signalData: any;
+  @Input() signalData!: { id: string; state?: 'halt' | 'fahrt'; type?: string };
 
-  circleRadius = 3;
-  circles = [
-    { cx: this.circleRadius * 1.6, cy: this.height / 3, fill: 'yellow' }, // Oben links
-    { cx: this.width - (this.circleRadius * 1.6), cy: this.height / 3, fill: 'green' }, // Oben rechts
-    { cx: this.circleRadius * 1.6, cy: this.height / 1.5, fill: 'yellow' }, // Unten links
-    { cx: this.width - (this.circleRadius * 1.6), cy: this.height / 1.5, fill: 'green' } // Unten rechts
-  ];
+  get signalState(): 'halt' | 'fahrt' {
+    return this.signalData?.state || 'halt';
+  }
+
+  circleRadius = 4;
+  circles: Array<{ cx: number; cy: number; fill: string }> = [];
+
+  ngOnInit() {
+    this.initializeCircles();
+    console.log('Vorsignal initialisiert mit Breite:', this.width, 'Höhe:', this.height);
+  }
+
+  private initializeCircles() {
+    this.circles = [
+      { cx: this.circleRadius * 2, cy: this.height / 3, fill: 'yellow' }, // Oben links
+      { cx: this.width - (this.circleRadius * 2), cy: this.height / 3, fill: 'green' }, // Oben rechts
+      { cx: this.circleRadius * 2, cy: this.height / 1.5, fill: 'yellow' }, // Unten links
+      { cx: this.width - (this.circleRadius * 2), cy: this.height / 1.5, fill: 'green' } // Unten rechts
+    ];
+  }
 
   vorsignalSymbol(): string {
     const path = d3.path();

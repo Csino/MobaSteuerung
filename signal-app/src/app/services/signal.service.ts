@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 
 export interface Signal {
   id: string;        // Format: S1, S2, etc.
@@ -10,7 +9,7 @@ export interface Signal {
 }
 
 interface SignalContainer {
-  type: string;
+  type: 'blocksignal' | 'einfahrsignal' | 'ausfahrsignal' | 'vorsignal';
   title: string;
   signals: Signal[];
 }
@@ -23,27 +22,65 @@ export class SignalService {
   private containers: SignalContainer[] = [];
   private signals: Signal[] = [];
 
-  private containersSource = new BehaviorSubject<SignalContainer[]>(this.containers);
-  currentContainers = this.containersSource.asObservable();
+  private containersSignal = signal<SignalContainer[]>(this.containers);
+  currentContainers = computed(() => this.containersSignal());
+
+  private readonly defaultContainers: SignalContainer[] = [
+    { type: 'einfahrsignal', title: 'Einfahrsignal', signals: [] },
+    { type: 'ausfahrsignal', title: 'Ausfahrsignal', signals: [] },
+    { type: 'blocksignal', title: 'Blocksignal', signals: [] },
+    { type: 'vorsignal', title: 'Vorsignal', signals: [] }
+  ];
 
   constructor() {
+    // Versuche die gespeicherten Daten zu laden
     const saved = localStorage.getItem(this.STORAGE_KEY);
-    this.containers = saved ? JSON.parse(saved) : [
-      { type: 'einfahrsignal', title: 'Einfahrsignal', signals: [] },
-      { type: 'ausfahrsignal', title: 'Ausfahrsignal', signals: [] },
-      { type: 'blocksignal', title: 'Blocksignal', signals: [] },
-      { type: 'vorsignal', title: 'Vorsignal', signals: [] }
-    ];
+    
+    try {
+      if (saved) {
+        const parsedData = JSON.parse(saved);
+        // Überprüfe, ob die geladenen Daten gültig sind
+        if (Array.isArray(parsedData) && 
+            parsedData.every(container => 
+              container.type && 
+              container.title && 
+              Array.isArray(container.signals)
+            )) {
+          this.containers = parsedData;
+          // Stelle sicher, dass alle erforderlichen Container vorhanden sind
+          this.defaultContainers.forEach(defaultContainer => {
+            if (!this.containers.find(c => c.type === defaultContainer.type)) {
+              this.containers.push({...defaultContainer});
+            }
+          });
+        } else {
+          throw new Error('Ungültige Datenstruktur');
+        }
+      } else {
+        this.containers = [...this.defaultContainers];
+      }
+    } catch (e) {
+      console.warn('Fehler beim Laden der Daten:', e);
+      this.containers = [...this.defaultContainers];
+    }
+
     // Signals aus allen Containern sammeln
     this.signals = [];
     this.containers.forEach(container => {
       this.signals.push(...container.signals);
     });
-    this.containersSource.next(this.containers);
+    
+    // Initialisiere das Signal
+    this.containersSignal.set(this.containers);
+    console.log('Initialisierte Container:', this.containers);
+    
+    // Speichere die initialisierten Container
+    this.saveToStorage();
   }
 
   private saveToStorage(): void {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.containers));
+    this.containersSignal.set([...this.containers]);
   }
 
   isSignalIdUnique(id: string): boolean {
@@ -75,9 +112,12 @@ export class SignalService {
       container.signals.push(newSignal);
       this.signals.push(newSignal);
       
-      this.containersSource.next([...this.containers]);
+      // Aktualisiere den State und speichere
+      this.containersSignal.set([...this.containers]);
       this.saveToStorage();
+      
       console.log('Signal saved successfully');
+      console.log('Updated containers:', this.containers);
       return true;
     }
     console.log('No container found for type:', signalData.type);
@@ -86,7 +126,11 @@ export class SignalService {
 
   addSignal(signal: Signal): boolean {
     if (this.isSignalIdUnique(signal.id)) {
-      this.signals.push(signal);
+      const newSignal: Signal = {
+        ...signal,
+        state: signal.state || 'halt'
+      };
+      this.signals.push(newSignal);
       return true;
     }
     return false;
@@ -96,7 +140,7 @@ export class SignalService {
     const container = this.containers.find(c => c.type === type);
     if (container) {
       container.signals = container.signals.filter(s => s.id !== id);
-      this.containersSource.next([...this.containers]);
+      this.containersSignal.set([...this.containers]);
       this.saveToStorage();
     }
   }

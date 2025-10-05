@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { SignalService } from '../../services/signal.service';
 import { BlockSignalSymbolComponent } from '../image/blocksignalsymbol.component';
 import { EntrySignalSymbolComponent } from '../image/entrysignalsymbol.component';
 import { ExitSignalSymbolComponent } from '../image/exitsignalsymbol.component';
 import { VorsignalSymbolComponent } from '../image/vorsignalsymbol.component';
+import { SignalService } from '../../services/signal.service';
+
+type SignalComponentType = Type<BlockSignalSymbolComponent | EntrySignalSymbolComponent | ExitSignalSymbolComponent | VorsignalSymbolComponent>;
+
+import { Signal } from '../../services/signal.service';
 
 interface SignalContainer {
   type: string;
   title: string;
-  signals: {
-    id: string;
-    type: string;
-  }[];
+  signals: Signal[];
 }
 
 @Component({
@@ -32,25 +33,39 @@ interface SignalContainer {
     VorsignalSymbolComponent
   ],
   templateUrl: './signale.component.html',
-  styleUrls: ['./signale.component.scss']
+  styleUrls: ['./signale.component.scss'],
+  host: {
+    'class': 'signal-component-host',
+    'style': 'display: block'
+  }
 })
 export class SignaleComponent implements OnInit {
   containers: SignalContainer[] = [];
-  containers$; // Nur Deklaration
 
-  constructor(private signalService: SignalService) {
-    this.containers$ = this.signalService.currentContainers; // Initialisierung im Konstruktor
-    this.signalService.currentContainers.subscribe(containers => {
-      this.containers = containers;
-      console.log('Containers updated:', this.containers);
-    });
-  }
+  constructor(private signalService: SignalService) {}
 
   ngOnInit() {
-    // Initialisierung kann hier erfolgen, falls nötig
+    // Initialisiere die Container
+    this.containers = this.signalService.currentContainers();
+    console.log('SignaleComponent Containers:', this.containers);
   }
 
   deleteSignal(type: string, id: string): void {
-    this.signalService.removeSignal(type, id);  // Korrigierte Referenz
+    this.signalService.removeSignal(type, id);
+  }
+
+  getSignalComponent(type: string): SignalComponentType | null {
+    switch(type) {
+      case 'blocksignal':
+        return BlockSignalSymbolComponent;
+      case 'einfahrsignal':
+        return EntrySignalSymbolComponent;
+      case 'ausfahrsignal':
+        return ExitSignalSymbolComponent;
+      case 'vorsignal':
+        return VorsignalSymbolComponent;
+      default:
+        return null;
+    }
   }
 }
