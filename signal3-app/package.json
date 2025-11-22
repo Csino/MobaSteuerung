@@ -27,7 +27,7 @@
     "bootstrap-icons": "latest",
     "d3": "latest",
     "mqtt": "latest",
-    "npm": "latest",
+    "npm": "^11.6.0",
     "rxjs": "latest",
     "tslib": "latest",
     "typescript": "latest",
