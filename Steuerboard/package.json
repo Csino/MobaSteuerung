@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.0",
-    "@angular/cli": "^19.0.0",
+    "@angular/cli": "^19.2.19",
     "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.2.0",
@@ -36,6 +36,6 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "sass": "^1.77.8",
     "typescript": "~5.5.2",
-    "vite": "^5.4.2"
+    "vite": "^7.2.4"
   }
 }

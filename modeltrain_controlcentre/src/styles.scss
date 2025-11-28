@@ -1,0 +1,15 @@
+/* Definiert die Farben für den ausschließlichen Dark Mode als Standard */
+:root {
+  --background-color: #121212; /* Dunkler Hintergrund */
+  --text-color: #ffffff;      /* Helle Schrift */
+  --header-bg: #333333;       /* Dunkle Header-Farbe */
+}
+
+/* Allgemeine Stile, die die Variablen verwenden */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  /* Optional: Stellt sicher, dass das body-Element den gesamten Viewport ausfüllt */
+  min-height: 100vh; 
+  margin: 0;
+}
